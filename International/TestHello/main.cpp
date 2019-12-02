@@ -1,5 +1,4 @@
-﻿#include "testhello.h"
-#include <QApplication>
+﻿#include <QApplication>
 #include <QTranslator>
 #include <QDebug>
 
@@ -11,9 +10,6 @@ int main(int argc, char *argv[])
     bool state = translator->load("D:/2019/International/TestHello/TestHello.qm");
     qDebug() << "state:" << state;
     a.installTranslator(translator);
-
-    TestHello w;
-    w.show();
 
     return a.exec();
 }

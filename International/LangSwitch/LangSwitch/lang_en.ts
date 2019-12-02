@@ -8,6 +8,9 @@
         <source>TXT_HELLO_WORLD</source>
         <comment>Hello World</comment>
         <translation>Hello World</translation>
+		<location filename="langswitch.cpp" line="26"/>
+        <source>sss</source>
+        <translation>测试</translation>
     </message>
 </context>
 </TS>

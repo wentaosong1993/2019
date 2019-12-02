@@ -11,6 +11,8 @@ LangSwitch::LangSwitch(QWidget *parent)
     : QWidget(parent)
 {
     createScreen();
+    QStringList language_list;
+    //language_list<< tr("English")<<tr("Chinese")<<tr("Latin");
 }
 
 LangSwitch::~LangSwitch()
@@ -18,20 +20,38 @@ LangSwitch::~LangSwitch()
 
 }
 
+void LangSwitch::setText2label(const char *text)
+{
+    _strText = QString(text);
+    label->setText(QCoreApplication::translate("QLabel",_strText.toStdString().c_str()));
+}
+
 void LangSwitch::changeLang(int index)
 {
     qInfo() << "curIndex:" << index;
     QString langCode = combo->itemData(index).toString();
     changeTr(langCode);
-    refreshLabel();
+    //    refreshLabel();
+}
+
+void LangSwitch::changeEvent(QEvent *event)
+{
+    switch (event->type())
+    {
+    case QEvent::LanguageChange:
+        refreshLabel();
+        break;
+    default:
+        break;
+    }
 }
 
 void LangSwitch::createScreen()
 {
     combo = new QComboBox;
-    combo->addItem("English", "en.qm");
-    combo->addItem("Chinese", "zh.qm");
-    combo->addItem("Latin", "la.qm");
+    combo->addItem(tr("English"), "en.qm");
+    combo->addItem(tr("Chinese"), "zh.qm");
+    combo->addItem(tr("Latin"), "la.qm");//اللغة العربية
     label = new QLabel;
     refreshLabel();
     QVBoxLayout * layout = new QVBoxLayout;
@@ -62,5 +82,5 @@ void LangSwitch::changeTr(const QString &langCode)
 
 void LangSwitch::refreshLabel()
 {
-    label->setText(tr("TXT_HELLO_WORLD", "Hello World"));
+    label->setText(QCoreApplication::translate("QLabel",_strText.toStdString().c_str()));
 }

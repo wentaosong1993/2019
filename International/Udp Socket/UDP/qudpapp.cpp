@@ -26,7 +26,7 @@ void QUdpApp::on_sendSigRb_clicked()
         //ui->sendSigRb->setChecked(false);
         return;
     }
-    qInfo() << QStringLiteral("单播:") << "IP:" << ui->sendBroadAddrEdit->text() << \
+    qInfo() << QStringLiteral("单播:") << "IP:" << ui->sendSigAddrEdit->text() << \
                "Port:" << ui->sendPortEdit->text();
     sendaddrees.setAddress( ui->sendSigAddrEdit->text());
     sendPort  = ui->sendPortEdit->text();
@@ -68,7 +68,8 @@ void QUdpApp::on_sendBroadRb_clicked()
 //发送按钮
 void QUdpApp::on_sendBt_clicked()
 {
-    mSocket->writeDatagram(ui->sendMesEdit->toPlainText().toUtf8(),sendaddrees,sendPort.toInt());
+    quint64 numbers = mSocket->writeDatagram(ui->sendMesEdit->toPlainText().toUtf8(),sendaddrees,sendPort.toInt());
+    qInfo() << "numbers:" << numbers;
 }
 
 //检测发送消息对话框中是否有消息
@@ -101,8 +102,16 @@ void QUdpApp::on_recvCb_clicked(bool checked)
     }
     if(checked)
     {
-        mSocket->bind(QHostAddress::AnyIPv4,ui->recvPortEdit->text().toInt());
-        connect(mSocket,SIGNAL(readyRead()),this,SLOT(read_data()));
+        bool state = mSocket->bind(QHostAddress::Any,ui->recvPortEdit->text().toInt(), QUdpSocket::DontShareAddress);
+        if(state)
+        {
+            qInfo() << "socketState1:" << mSocket->state();
+            connect(mSocket,SIGNAL(readyRead()),this,SLOT(read_data()));
+        }
+        else
+        {
+            qInfo() << "socketState2:" << mSocket->state();
+        }
         ui->recvPortEdit->setEnabled(false);
     }
     else
@@ -140,6 +149,7 @@ void QUdpApp::on_recvLeaveMulBt_clicked()
 
 void QUdpApp::read_data()
 {
+    qInfo() << "read data";
     QByteArray array;
     array.resize(mSocket->bytesAvailable()); //将接收数据的array设置成为要接收数据的大小
     QHostAddress recvaddress;

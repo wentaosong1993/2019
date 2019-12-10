@@ -68,7 +68,8 @@ void QUdpApp::on_sendBroadRb_clicked()
 //发送按钮
 void QUdpApp::on_sendBt_clicked()
 {
-    mSocket->writeDatagram(ui->sendMesEdit->toPlainText().toUtf8(),sendaddrees,sendPort.toInt());
+    quint64 numbers = mSocket->writeDatagram(ui->sendMesEdit->toPlainText().toUtf8(),sendaddrees,sendPort.toInt());
+    qInfo() << "numbers:" << numbers;
 }
 
 //检测发送消息对话框中是否有消息
@@ -101,6 +102,17 @@ void QUdpApp::on_recvCb_clicked(bool checked)
     }
     if(checked)
     {
+        bool state = mSocket->bind(QHostAddress::Any,ui->recvPortEdit->text().toInt(), QUdpSocket::DontShareAddress);
+        if(state)
+        {
+            qInfo() << "socketState1:" << mSocket->state();
+            connect(mSocket,SIGNAL(readyRead()),this,SLOT(read_data()));
+        }
+        else
+        {
+            qInfo() << "socketState2:" << mSocket->state();
+        }
+
         mSocket->bind(QHostAddress::AnyIPv4,ui->recvPortEdit->text().toInt());
         //mSocket->bind(QHostAddress("192.168.1.2"),ui->recvPortEdit->text().toInt());
        // mSocket->bind(ui->recvPortEdit->text().toInt());

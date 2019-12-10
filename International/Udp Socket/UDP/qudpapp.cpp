@@ -22,7 +22,7 @@ void QUdpApp::on_sendSigRb_clicked()
 {
     if(ui->sendPortEdit->text().isEmpty() || ui->sendSigAddrEdit->text().isEmpty())
     {
-        QMessageBox::warning(this,"提示","请输入单播ip和端口号");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("请输入单播ip和端口号"));
         //ui->sendSigRb->setChecked(false);
         return;
     }
@@ -38,7 +38,7 @@ void QUdpApp::on_sendMulRb_clicked()
 {
     if(ui->sendPortEdit->text().isEmpty() || ui->sendMulAddrEdit->text().isEmpty())
     {
-        QMessageBox::warning(this,"提示","请输入组播ip和端口号");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("请输入组播ip和端口号"));
         //ui->sendSigRb->setChecked(false);
         return;
     }
@@ -54,7 +54,7 @@ void QUdpApp::on_sendBroadRb_clicked()
 {
     if(ui->sendPortEdit->text().isEmpty() || ui->sendBroadAddrEdit->text().isEmpty())
     {
-        QMessageBox::warning(this,"提示","请输入广播ip和端口号");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("请输入广播ip和端口号"));
         //ui->sendSigRb->setChecked(false);
         return;
     }
@@ -96,7 +96,7 @@ void QUdpApp::on_recvCb_clicked(bool checked)
 {
     if(ui->recvPortEdit->text().isEmpty())
     {
-        QMessageBox::warning(this,"提示","请输入端口号");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("请输入端口号"));
         ui->recvCb->setChecked(false);
         return;
     }
@@ -112,6 +112,11 @@ void QUdpApp::on_recvCb_clicked(bool checked)
         {
             qInfo() << "socketState2:" << mSocket->state();
         }
+
+        mSocket->bind(QHostAddress::AnyIPv4,ui->recvPortEdit->text().toInt());
+        //mSocket->bind(QHostAddress("192.168.1.2"),ui->recvPortEdit->text().toInt());
+       // mSocket->bind(ui->recvPortEdit->text().toInt());
+        connect(mSocket,SIGNAL(readyRead()),this,SLOT(read_data()));
         ui->recvPortEdit->setEnabled(false);
     }
     else
@@ -126,7 +131,7 @@ void QUdpApp::on_recvJoinMulBt_clicked()
 {
     if(ui->recvMulAddrEdit->text().isEmpty())
     {
-        QMessageBox::warning(this,"提示","请输入组播ip");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("请输入组播ip"));
         return;
     }
     if(mSocket->joinMulticastGroup(QHostAddress(ui->recvMulAddrEdit->text()))) //加入组播
@@ -135,7 +140,7 @@ void QUdpApp::on_recvJoinMulBt_clicked()
     }
     else
     {
-        QMessageBox::warning(this,"提示","加入组播失败,请修改ip后继续加入");
+        QMessageBox::warning(this,QStringLiteral("提示"),QStringLiteral("加入组播失败,请修改ip后继续加入"));
         //return;
     }
 }
